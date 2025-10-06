@@ -1,0 +1,88 @@
+package JAVAASSIGN;
+
+import java.util.*;
+import java.text.SimpleDateFormat;
+public class BankingManagementSystem {
+private static Scanner sc = new Scanner(System.in);
+private static Map<String, Customer> customers = new HashMap<>();
+private static Map<String, BankAccount> accounts = new HashMap<>();
+private static Map<String, Loan> loans = new HashMap<>();
+public static void main(String[] args) {
+boolean running = true; while (running) {
+printMenu();
+String choice = sc.nextLine().trim();
+switch (choice) {
+case "1": addCustomer(); break; case "2": openAccount(); break; case "3": depositMoney(); break; case "4": withdrawMoney(); break; case "5": applyLoan(); break;
+case "6": displayAccountDetails(); break; case "7": checkBalance(); break;
+case "8": System.out.println("Exiting..."); running = false; break; default: System.out.println("Invalid choice. Try again.");
+}
+System.out.println();
+}
+sc.close();
+}
+private static void printMenu() {
+ 
+System.out.println("=== Banking Management System ==="); System.out.println("1. Add Customer"); System.out.println("2. Open Account"); System.out.println("3. Deposit Money"); System.out.println("4. Withdraw Money"); System.out.println("5. Apply Loan");
+System.out.println("6. Display Account Details"); System.out.println("7. Check Balance"); System.out.println("8. Exit"); System.out.print("Choose an option: ");
+}
+
+
+private static void addCustomer() { System.out.print("Enter customer name: "); String name = sc.nextLine().trim(); System.out.print("Enter address: ");
+String address = sc.nextLine().trim(); String id = IdUtils.nextId("C");
+Customer c = new Customer(id, name, address); customers.put(id, c); System.out.println("Customer added. ID: " + id);
+}
+private static void openAccount() { System.out.print("Enter customer ID: "); String cid = sc.nextLine().trim(); Customer c = customers.get(cid);
+if (c == null) { System.out.println("Customer not found."); return; } System.out.print("Enter account type (SAVINGS/CURRENT): "); String type = sc.nextLine().trim().toUpperCase(); System.out.print("Initial deposit amount: ");
+double amt = Double.parseDouble(sc.nextLine().trim());
+ 
+BankAccount acc = null;
+if ("SAVINGS".equals(type)) {
+acc = new SavingsAccount(IdUtils.nextId("A"), c, amt, 0.04);
+} else if ("CURRENT".equals(type)) {
+acc = new CurrentAccount(IdUtils.nextId("A"), c, amt, 1000.0);
+} else {
+System.out.println("Unknown account type."); return;
+}
+accounts.put(acc.getAccountNumber(), acc); c.addAccount(acc);
+System.out.println(type + " account opened successfully."); System.out.println("Account No: " + acc.getAccountNumber());
+}
+private static void depositMoney() { System.out.print("Enter account number: "); String accNo = sc.nextLine().trim(); BankAccount acc = accounts.get(accNo);
+if (acc == null) { System.out.println("Account not found."); return; } System.out.print("Amount to deposit: ");
+double amt = Double.parseDouble(sc.nextLine().trim()); Transaction t = new DepositTransaction(acc, amt, "Cash deposit"); if (t.execute()) {
+System.out.println(t.printReceipt());
+} else {
+System.out.println("Deposit failed.");
+}
+}
+private static void withdrawMoney() { System.out.print("Enter account number: "); String accNo = sc.nextLine().trim(); BankAccount acc = accounts.get(accNo);
+ 
+if (acc == null) { System.out.println("Account not found."); return; } System.out.print("Amount to withdraw: ");
+double amt = Double.parseDouble(sc.nextLine().trim());
+Transaction t = new WithdrawalTransaction(acc, amt, "Cash withdrawal");
+if (t.execute()) { System.out.println(t.printReceipt());
+} else {
+System.out.println("Withdrawal failed: insufficient funds or overdraft limit exceeded.");
+}
+}
+private static void applyLoan() { System.out.print("Enter customer ID: "); String cid = sc.nextLine().trim(); Customer c = customers.get(cid);
+if (c == null) { System.out.println("Customer not found."); return; } System.out.print("Loan amount: ");
+double amt = Double.parseDouble(sc.nextLine().trim()); System.out.print("Term (months): ");
+int term = Integer.parseInt(sc.nextLine().trim());
+Loan loan = new Loan(IdUtils.nextId("L"), c, amt, term);
+// Loan approval based strictly on eligibility criteria boolean approved = loan.evaluateEligibility(); loans.put(loan.getLoanId(), loan);
+if (approved) {
+System.out.println(" Loan Approved! Loan ID: " + loan.getLoanId());
+} else {
+System.out.println(" Loan Rejected! Eligibility criteria not met."); System.out.println(" - Minimum total balance required: ₹5000"); System.out.println(" - Loan amount ≤ 5 × Total balance");
+}
+System.out.println("Customer total balance: ₹" + String.format("%.2f", c.getTotalBalance()));
+ 
+}
+private static void displayAccountDetails() { System.out.print("Enter account number: "); String accNo = sc.nextLine().trim(); BankAccount acc = accounts.get(accNo);
+if (acc == null) { System.out.println("Account not found."); return; } System.out.println(acc.getAccountDetails());
+}
+private static void checkBalance() { System.out.print("Enter account number: "); String accNo = sc.nextLine().trim(); BankAccount acc = accounts.get(accNo);
+if (acc == null) { System.out.println("Account not found."); return; } System.out.println("Current Balance: ₹" + String.format("%.2f", acc.getBalance()));
+}
+}
+
