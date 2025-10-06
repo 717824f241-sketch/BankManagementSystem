@@ -1,0 +1,19 @@
+abstract class BankAccount {
+private String accountNumber;
+private double balance;
+private Customer owner;
+public BankAccount(String accountNumber, Customer owner, double initialBalance) {
+this.accountNumber = accountNumber;
+this.owner = owner;
+this.balance = initialBalance;
+}
+public String getAccountNumber() { return accountNumber; }
+public Customer getOwner() { return owner; }
+public double getBalance() { return balance; }
+protected void setBalance(double b) { this.balance = b; }
+ 
+public String getAccountDetails() {
+return "Account No: " + accountNumber + "\nOwner: " + owner.getName() +
+" (ID: " + owner.getCustomerId() + ")\nBalance: ₹" + String.format("%.2f", balance);
+}
+}
