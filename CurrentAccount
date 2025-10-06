@@ -1,0 +1,9 @@
+class CurrentAccount extends BankAccount {
+private double overdraftLimit;
+public CurrentAccount(String accountNumber, Customer owner, double initialBalance, double
+overdraftLimit) {
+super(accountNumber, owner, initialBalance);
+this.overdraftLimit = overdraftLimit;
+}
+public double getOverdraftLimit() { return overdraftLimit; }
+}
