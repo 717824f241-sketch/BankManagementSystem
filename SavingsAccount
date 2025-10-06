@@ -1,0 +1,8 @@
+class SavingsAccount extends BankAccount {
+private double interestRate;
+public SavingsAccount(String accountNumber, Customer owner, double initialBalance, double
+interestRate) {
+super(accountNumber, owner, initialBalance);
+this.interestRate = interestRate;
+}
+}
