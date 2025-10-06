@@ -1,0 +1,26 @@
+class Loan {
+private String loanId;
+private Customer customer;
+private double amount;
+private int termMonths;
+private boolean approved;
+public Loan(String loanId, Customer customer, double amount, int termMonths) {
+this.loanId = loanId; this.customer = customer; this.amount = amount;
+ 
+this.termMonths = termMonths;
+}
+// Loan eligibility criteria
+// - Customer must have total balance >= 5000
+// - Loan amount <= 5x total balance
+public boolean evaluateEligibility() {
+double total = customer.getTotalBalance();
+if (total < 5000) { approved = false;
+} else if (amount > total * 5) { approved = false;
+} else {
+approved = true;
+}
+return approved;
+}
+public String getLoanId() { return loanId; }
+public boolean isApproved() { return approved; }
+}
