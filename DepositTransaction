@@ -1,0 +1,12 @@
+class DepositTransaction extends Transaction {
+public DepositTransaction(BankAccount account, double amount, String note) {
+super(account, amount, note);
+}
+@Override
+public boolean execute() {
+if (amount <= 0) return false;
+ 
+account.setBalance(account.getBalance() + amount);
+return true;
+}
+}
