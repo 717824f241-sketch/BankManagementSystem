@@ -1,0 +1,13 @@
+class WithdrawalTransaction extends Transaction {
+public WithdrawalTransaction(BankAccount account, double amount, String note) {
+super(account, amount, note);
+}
+@Override
+public boolean execute() {
+double current = account.getBalance();
+double allowed = current;
+if (account instanceof CurrentAccount)
+allowed = current + ((CurrentAccount) account).getOverdraftLimit();
+if (amount > allowed) return false; account.setBalance(current - amount); return true;
+}
+}
